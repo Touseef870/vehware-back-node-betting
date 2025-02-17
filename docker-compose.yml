@@ -1,0 +1,26 @@
+# version: '3'
+# services:
+#   backend:
+#     build: .
+#     ports:
+#       - "3000:3000"
+#     volumes:
+#       - .:/usr/src/app
+#       - /usr/src/app/node_modules
+#     environment:
+#       - NODE_ENV=development
+#     command: ["npx", "nodemon", "server.js"] # To ensure nodemon runs on container start
+
+version: '3'
+services:
+  backend:
+    build: .
+    ports:
+      - "3000:3000" # Exposing port 3000 to the host machine
+    volumes:
+      - .:/usr/src/app # Mounting the current directory to /usr/src/app in the container
+      - /usr/src/app/node_modules # Ensuring node_modules are not overwritten by the volume mount
+    environment:
+      - NODE_ENV=development # Setting the environment variable for development
+    command: ["npx", "nodemon", "--watch", "/usr/src/app", "server.js"]
+    restart: unless-stopped # Automatically restart the container unless manually stopped

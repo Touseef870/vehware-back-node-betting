@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Build the Docker image
+docker build -t vehware-crm-node-backedn .
+
+# Run the Docker container
+docker run -p 3000:3000 vehware-crm-node-backedn
+
