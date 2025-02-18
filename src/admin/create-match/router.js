@@ -6,7 +6,7 @@ import updateController from "./controllers/update.js";
 import { verifyToken } from "../../../middleware/index.js";
 const router = Router();
 
-router.post("/", verifyToken, postController)
+router.post("/create", verifyToken, postController)
 router.get("/get", getController)
 // router.delete("/:id", deleteController)
 // router.put("/:id", updateController)

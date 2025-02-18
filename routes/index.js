@@ -12,8 +12,8 @@ router.use('/bet', betRoute)
 router.use('/wallet', walletRoute)
 
 // Admin Use This Route
-router.use('/create-match', matchRoute)
-router.use('/add-questions', questionsRoute)
+router.use('/matches', matchRoute)
+router.use('/questions', questionsRoute)
 
 
 export default router;
