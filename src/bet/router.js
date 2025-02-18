@@ -8,7 +8,7 @@ import getByIdController from "./controllers/getById.js"
 const router = Router();
 
 router.post("/add", verifyToken, postController)
-router.get("/get", verifyToken, getByIdController)
+router.get("/get", getByIdController)
 // router.post("/login", loginController)
 // router.patch("/update", verifyToken, updateController)
 // router.delete("/delete", verifyToken, deleteController)
