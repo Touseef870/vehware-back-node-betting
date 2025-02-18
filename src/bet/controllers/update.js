@@ -1,43 +1,36 @@
 import Response from '../../../class/response.js';
-import updateData from '../services/update.js';
+import { getById } from "../db/index.js";
 import { wait, decodeVerifiedToken } from '../../../utils/index.js';
 
 const updateController = async (req, res) => {
     await wait(2000);
     const response = new Response(res);
 
-    let { _id } = decodeVerifiedToken(req.headers.authorization)
+    const { userId, betId } = req.params;
 
-    if (!_id) {
-        return response.error("the token is invalid");
-    }
+    let { role } = decodeVerifiedToken(req.headers.authorization);
 
-    let credential = {};
-    if (req.body.email) {
-        credential.email = req.body.email;
-    }
-
-    if (req.body.name) {
-        credential.name = req.body.name;
-    }
-
-    if (req.body.country) {
-        credential.country = req.body.country;
+    if (role !== "admin") {
+        return response.error(null, "You are not authorized to perform this action");
     }
 
     try {
 
-        const responseUpdatedCredential = await updateData(_id, credential);
-        const data = responseUpdatedCredential.toObject();
+        const isUserExist = await getById(userId);
+        if (!isUserExist) {
+            return response.error(null, "id doesn't match any data");
+        }
 
-        let credentialInfo = {
-            _id: data._id,
-            name: data.name,
-            email: data.email,
-            country: data.country,
-        };
+        const isQuestionMatch = isUserExist.bets.find(bet => bet._id == betId);
+        if (!isQuestionMatch) {
+            return response.error(null, "Bet not found");
+        }
 
-        return response.success(credentialInfo, 'Credential Updated successfully');
+        isQuestionMatch.win = req.body.win;
+
+        await isUserExist.save();
+
+        return response.success(isQuestionMatch, 'Credential Updated successfully');
     } catch (error) {
 
         let messages = [];

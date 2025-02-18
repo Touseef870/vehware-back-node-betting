@@ -5,7 +5,7 @@ import { decodeVerifiedToken } from "#utils/index.js"
 const postController = async (req, res) => {
     const response = new Response(res);
 
-    let { _id, email, role } = decodeVerifiedToken(req.headers.authorization);
+    let { role } = decodeVerifiedToken(req.headers.authorization);
 
     if (role !== "admin") {
         return response.error(null, "You are not authorized to perform this action");

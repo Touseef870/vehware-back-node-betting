@@ -9,8 +9,8 @@ const router = Router();
 
 router.post("/add", verifyToken, postController)
 router.get("/get", getByIdController)
+router.patch("/update/:userId/:betId", verifyToken, updateController)
 // router.post("/login", loginController)
-// router.patch("/update", verifyToken, updateController)
 // router.delete("/delete", verifyToken, deleteController)
 
 export default router;
