@@ -2,27 +2,27 @@ import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
 
 const dataSchema = new Schema({
-    email: {
-        type: String,
-        required: [true, "Email is required"],
-        unique: true,
-        match: [/.+@.+\..+/, "Please enter a valid email"]
-    },
     username: {
         type: String,
-        required: [true, "Name is required"],
+        required: [true, "name is required"],
         unique: true
     },
-    phone: {
-        type: String,
-        required: [true, "Phone number is required"],
+    contact: {
+        type: Number,
+        required: [true, "contact number is required"],
         unique: true
+    },
+    email: {
+        type: String,
+        required: [true, "email is required"],
+        unique: true,
+        match: [/.+@.+\..+/, "invalid email"]
     },
     password: {
         type: String,
-        required: [true, "Password is required"],
-        minlength: [6, "Password must be at least 6 characters long"],
-        maxlength: [25, "Password must be at most 25 characters long"]
+        required: [true, "password is required"],
+        minlength: [6, "password must be at least 6 characters long"],
+        maxlength: [24, "password must be at less than 24 characters long"]
     },
     role: {
         type: String,

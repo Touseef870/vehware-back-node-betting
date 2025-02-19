@@ -13,9 +13,31 @@ const walletSchema = new mongoose.Schema({
     },
     transactions: [
         {
-            amount: Number,
-            type: { type: String, enum: ['credit', 'debit'] },
-            date: { type: Date, default: Date.now }
+            currentBalance: {
+                type: Number,
+                required: [true, 'current balance is required']
+            },
+            isRecieved: {
+                type: Boolean,
+                required: true,
+                default: false
+            },
+            amount: {
+                type: Number,
+                required: [true, 'the amount to transact is required']
+            },
+            message: {
+                type: String,
+                default: null,
+            },
+            type: { 
+                type: String, 
+                enum: ['credit', 'debit'] 
+            },
+            date: { 
+                type: Date, 
+                default: Date.now 
+            },
         }
     ]
 }, { timestamps: true });

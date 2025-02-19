@@ -20,16 +20,17 @@ const loginController = async (req, res) => {
 
     try {
         const responseCredential = await login(userLogin);
+        
         if (!responseCredential) {
-            return response.error("this email or username is not registered");
+            return response.error("may the email or username is not registered");
         }
 
         const isPasswordMatch = await responseCredential.isPasswordValid(userLogin.password);
         if (!isPasswordMatch) {
-            return response.error("the passowrd is incorrect");
+            return response.error("invalid password");
         }
 
-        let credential = responseCredential.toObject();
+        let credential = responseCredential.toObject(); // make sure the object should convert from prv function
         const token = generateToken(credential);
 
         let credentialInfo = {

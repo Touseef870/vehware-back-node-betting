@@ -15,7 +15,7 @@ const postController = async (req, res) => {
         let userInfo = {};
         userInfo.username = req.body.username;
         userInfo.email = req.body.email;
-        userInfo.phone = req.body.phone;
+        userInfo.contact = req.body.contact;
         userInfo.password = req.body.password;
         userInfo.role = "user"
 
@@ -29,16 +29,22 @@ const postController = async (req, res) => {
         });
         await newWallet.save();
 
-        let credentialInfo = {
-            _id: credential._id,
-            username: credential.username,
-            email: credential.email,
-            phone: credential.phone,
-            role: credential.role,
-            token: token,
-        };
+        if (credential) {
+            userInfo.id = credential._id;
+            userInfo.token = token;
+            delete userInfo.role
+            delete userInfo.password
+        }
+        // let credentialInfo = {
+        //     _id: credential._id,
+        //     username: credential.username,
+        //     email: credential.email,
+        //     contact: credential.phone,
+        //     role: credential.role,
+        //     token: token,
+        // };
 
-        return response.success(credentialInfo, 'Data Added successfully');
+        return response.success(userInfo, 'Data Added successfully');
     } catch (error) {
 
         if (error.code == 11000) {
