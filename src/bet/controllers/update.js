@@ -3,7 +3,7 @@ import { getById } from "../db/index.js";
 import { wait, decodeVerifiedToken } from '../../../utils/index.js';
 
 const updateController = async (req, res) => {
-    await wait(2000);
+
     const response = new Response(res);
 
     const { userId, betId } = req.params;
@@ -26,7 +26,7 @@ const updateController = async (req, res) => {
             return response.error(null, "Bet not found");
         }
 
-        isQuestionMatch.win = req.body.win;
+        isQuestionMatch.is_win = req.body.win;
 
         await isUserExist.save();
 

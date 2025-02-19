@@ -22,9 +22,9 @@ const getByIdController = async (req, res) => {
             bets: credential.bets.map(bet => ({
                 _id: bet._id,
                 questionId: bet.questionId,
-                optionAns: bet.optionAns,
+                optionAns: bet.selectd_Ans,
                 amount: bet.amount,
-                win: bet.win
+                win: bet.is_win
             }))
         };
 

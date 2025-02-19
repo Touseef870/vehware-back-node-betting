@@ -49,6 +49,15 @@ const postController = async (req, res) => {
 
         return response.success(responseWallet, 'Funds added successfully');
     } catch (error) {
+
+        if (error.code == 11000) {
+            let duplicationErrors = {}
+            for (let field in error.keyPattern) {
+                duplicationErrors[field] = `${field} already exists`
+            }
+            return response.error(duplicationErrors, "Duplicate Key Error", 400)
+        }
+
         if (error.name === "ValidationError") {
             let validationErrors = {};
             for (let field in error.errors) {

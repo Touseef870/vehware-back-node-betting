@@ -53,6 +53,15 @@ export default async function postController(req, res) {
         }, "Questions added successfully");
 
     } catch (error) {
+
+        if (error.code == 11000) {
+            let duplicationErrors = {}
+            for (let field in error.keyPattern) {
+                duplicationErrors[field] = `${field} already exists`
+            }
+            return response.error(duplicationErrors, "Duplicate Key Error", 400)
+        }
+
         if (error.name === "ValidationError") {
             let validationErrors = {};
             for (let field in error.errors) {
@@ -61,6 +70,15 @@ export default async function postController(req, res) {
             return response.error(validationErrors, "Validation Error", 400);
         }
 
-        response.error(error.message, "Internal Server Error", 500);
+        let messages = [];
+        if (error.errors) {
+            for (let field in error.errors) {
+                messages.push(error.errors[field].message);
+            }
+        } else {
+            messages.push(error.message);
+        }
+
+        response.error(messages, "Internal Server Error", 500);
     }
 }

@@ -19,7 +19,6 @@ const walletSchema = new mongoose.Schema({
             },
             isRecieved: {
                 type: Boolean,
-                required: true,
                 default: false
             },
             amount: {
@@ -30,14 +29,18 @@ const walletSchema = new mongoose.Schema({
                 type: String,
                 default: null,
             },
-            type: { 
-                type: String, 
-                enum: ['credit', 'debit'] 
+            type: {
+                type: String,
+                enum: ['credit', 'debit']
             },
-            date: { 
-                type: Date, 
-                default: Date.now 
+            date: {
+                type: Date,
+                default: Date.now
             },
+            historyId: {
+                type: String,
+                unique: true,
+            }
         }
     ]
 }, { timestamps: true });

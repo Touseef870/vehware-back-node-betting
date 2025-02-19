@@ -2,6 +2,7 @@ import Response from '../../../class/response.js';
 import Wallet from '../../wallet/models/index.js';
 import BetModel from '../models/index.js';
 import { decodeVerifiedToken } from "../../../utils/index.js";
+import postData from '../services/post.js';
 
 const placeBetController = async (req, res) => {
     const response = new Response(res);
@@ -12,15 +13,15 @@ const placeBetController = async (req, res) => {
     session.startTransaction();
 
     try {
-        const { questionId, optionAns, amount } = req.body;
+        const { matchId, questionId, selectd_Ans, amount } = req.body;
 
         const betCredential = {
-            _id: '',
             userId: _id,
             bets: [
                 {
+                    matchId,
                     questionId,
-                    optionAns,
+                    selectd_Ans,
                     amount
                 }
             ]
@@ -46,9 +47,15 @@ const placeBetController = async (req, res) => {
         let userBet = await BetModel.findOne({ userId: _id }).session(session);
 
         if (!userBet) {
-            userBet = new Bet(betCredential);
+            let mewUserBet = await postData(betCredential);
+            betCredential._id = mewUserBet._id
+
+            await session.commitTransaction();
+            session.endSession();
+
+            return response.success(betCredential, "Bet placed successfully");
         } else {
-            userBet.bets.push({ questionId, optionAns, amount });
+            userBet.bets.push({ questionId, matchId, selectd_Ans, amount });
         }
 
         await userBet.save({ session });
@@ -62,6 +69,14 @@ const placeBetController = async (req, res) => {
     } catch (error) {
         await session.abortTransaction();
         session.endSession();
+
+        if (error.code == 11000) {
+            let duplicationErrors = {}
+            for (let field in error.keyPattern) {
+                duplicationErrors[field] = `${field} already exists`
+            }
+            return response.error(duplicationErrors, "Duplicate Key Error", 400)
+        }
 
         if (error.name === "ValidationError") {
             let validationErrors = {};

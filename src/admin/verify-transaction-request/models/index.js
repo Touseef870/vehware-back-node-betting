@@ -26,10 +26,6 @@ const matchWithQuestionsSchema = new mongoose.Schema(
                         message: "At least two options are required",
                     },
                 },
-                correctOption: {
-                    type: String,
-                    trim: true,
-                },
             },
         ],
     },
@@ -38,7 +34,7 @@ const matchWithQuestionsSchema = new mongoose.Schema(
 
 // **Model Export**
 const MatchWithQuestionsModel = mongoose.model(
-    "MatchWithQuestions",
+    "MatchWithQuestion",
     matchWithQuestionsSchema
 );
 

@@ -1,41 +1,11 @@
 import Response from '../../../../class/response.js';
-import postData from "../services/post.js"
-import { decodeVerifiedToken } from "#utils/index.js"
 
-const postController = async (req, res) => {
+export default async function postController(req, res) {
     const response = new Response(res);
 
-    let { role } = decodeVerifiedToken(req.headers.authorization);
-
-    if (role !== "admin") {
-        return response.error(null, "You are not authorized to perform this action");
-    }
-
     try {
-
-        const matchesCredential = {
-            title: req.body.title,
-            startTime: req.body.startTime,
-            status: req.body.status,
-            minBet: req.body.minBet,
-            maxBet: req.body.maxBet,
-        }
-
-        const result = await postData(matchesCredential);
-
-        const matchInfo = {
-            _id: result._id,
-            title: result.title,
-            startTime: result.startTime,
-            status: result.status,
-            minBet: result.minBet,
-            maxBet: result.maxBet,
-            createdAt: result.createdAt
-        }
-
-        return response.success(matchInfo, 'Data fetched successfully');
+        return response.success("Ok", 'Data fetched successfully');
     } catch (error) {
-
         if (error.code == 11000) {
             let duplicationErrors = {}
             for (let field in error.keyPattern) {
@@ -64,5 +34,3 @@ const postController = async (req, res) => {
         response.error(messages, "Internal Server Error", 500);
     }
 }
-
-export default postController;
