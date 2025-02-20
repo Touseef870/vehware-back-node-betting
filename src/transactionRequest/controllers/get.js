@@ -9,12 +9,7 @@ const getController = async (req, res) => {
 
 
     try {
-
         const walletDetails = await dataGet(_id);
-        if (!walletDetails) {
-            return response.error([], "Wallet not found for this user");
-        }
-
         const wallet = walletDetails.toObject();
 
         const responseWallet = {

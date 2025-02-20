@@ -26,10 +26,6 @@ const postController = async (req, res) => {
         if (postResponse) {
             let wallet = await walletSchema.findOne({ userId: _id });
 
-            if (!wallet) {
-                return response.error(null, "Wallet not found");
-            }
-
             wallet.transactions.push({
                 amount,
                 type: "credit",
@@ -41,7 +37,15 @@ const postController = async (req, res) => {
             await wallet.save();
         }
 
-        return response.success(postResponse, "successfull");
+        let responseObject = {
+            _id: postResponse._id,
+            userId: postResponse.userId,
+            transactionId: postResponse.transactionId,
+            amount: postResponse.amount,
+            status: postResponse.status,
+        }
+
+        return response.success(responseObject, "successfull");
 
     } catch (error) {
 
