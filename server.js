@@ -111,7 +111,10 @@ app.get("/MatchInfo", async (req, res) => {
   }
 });
 
+
 app.use("/api", routes);
+
+
 
 app.all("*", (req, res) => {
   const response = new Response(res);
