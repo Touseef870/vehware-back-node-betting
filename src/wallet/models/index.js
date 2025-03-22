@@ -40,6 +40,7 @@ const walletSchema = new mongoose.Schema({
             historyId: {
                 type: String,
                 unique: true,
+                default: null
             }
         }
     ]
