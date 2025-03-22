@@ -2,6 +2,7 @@ import Response from '../../../class/response.js';
 import postData from '../services/post.js';
 import generateToken from '../../../utils/generateToken.js';
 import WalletModel from '../../wallet/models/index.js';
+import mongoose from 'mongoose';
 
 const postController = async (req, res) => {
     const response = new Response(res);
@@ -25,7 +26,16 @@ const postController = async (req, res) => {
         const newWallet = new WalletModel({
             userId: credential._id,
             balance: 0,
-            transactions: []
+            transactions: [
+                {
+                    currentBalance: 0,
+                    amount: 0,
+                    type: 'credit',
+                    historyId: new mongoose.Types.ObjectId(), // Generate a unique historyId
+                    isRecieved: true
+                }
+            ],
+
         });
         await newWallet.save();
 
