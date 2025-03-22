@@ -41,39 +41,39 @@ cloudinaryConfig();
 // ========================================================
 // ====================== Try Connect =====================
 // ========================================================
-mongoose
-  .connect(process.env.MONGO_URI, {
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000,
-  })
-  .then(() =>
-    console.log("---- Connected to MongoDB ----")
-  )
-  .catch((err) =>
-    console.log("---- Error Connected MongoDB ----", err)
-  );
+// mongoose
+//   .connect(process.env.MONGO_URI, {
+//     serverSelectionTimeoutMS: 5000,
+//     socketTimeoutMS: 45000,
+//   })
+//   .then(() =>
+//     console.log("---- Connected to MongoDB ----")
+//   )
+//   .catch((err) =>
+//     console.log("---- Error Connected MongoDB ----", err)
+//   );
 
 
 // ========================================================
 // ===================== If connected =====================
 // ========================================================
-const db = mongoose.connection;
+// const db = mongoose.connection;
 
 
 // ========================================================
 // =================== Mongoose Events ====================
 // ========================================================
-db.on("connected", () => {
-  console.log("---- Mongoose connected to DB ----");
-});
+// db.on("connected", () => {
+//   console.log("---- Mongoose connected to DB ----");
+// });
 
-db.on("error", (err) => {
-  console.log("---- Mongoose connection error ----", err);
-});
+// db.on("error", (err) => {
+//   console.log("---- Mongoose connection error ----", err);
+// });
 
-db.on("disconnected", () => {
-  console.log("---- Mongoose disconnected from DB ----");
-});
+// db.on("disconnected", () => {
+//   console.log("---- Mongoose disconnected from DB ----");
+// });
 
 
 // ========================================================
@@ -82,33 +82,6 @@ db.on("disconnected", () => {
 app.get("/", (req, res) => {
   const response = new Response(res);
   return response.success({}, 'Api is running successfully by Touseef Abid || Sharjeel Hussain 😁');
-});
-
-app.get("/MatchInfo", async (req, res) => {
-  const response = new Response(res);
-
-  try {
-    // Making the API request to CricBuzz API
-    const res = await axios.get("https://cricbuzz-cricket.p.rapidapi.com/matches/v1/live", {
-      headers: {
-        'x-rapidapi-host': 'cricbuzz-cricket.p.rapidapi.com',
-        'x-rapidapi-key': '3eaf2cd0f6msh9f0419b7c6972ffp1ae7b9jsn851ea81fff04'
-      }
-    });
-
-    // Return the data from CricBuzz API as the response
-    // return res.json({
-    //   message: "API is running successfully",
-    //   data: response.data
-    // });
-    return response.success(res.data.typeMatches, 'API is running successfully');
-  } catch (error) {
-
-    const errorResponse = error.message ? error.message : error;
-
-    // console.error(error);
-    return response.error({}, errorResponse);
-  }
 });
 
 
