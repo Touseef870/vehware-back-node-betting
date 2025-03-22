@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import routes from "./routes/index.js";
 import Response from "./class/response.js";
 import { cloudinaryConfig } from './Upload Cloudinary/index.js'
+import axios from "axios";
 
 const corsOptions = {
   origin: "*",
@@ -83,7 +84,37 @@ app.get("/", (req, res) => {
   return response.success({}, 'Api is running successfully by Touseef Abid || Sharjeel Hussain 😁');
 });
 
+app.get("/MatchInfo", async (req, res) => {
+  const response = new Response(res);
+
+  try {
+    // Making the API request to CricBuzz API
+    const res = await axios.get("https://cricbuzz-cricket.p.rapidapi.com/matches/v1/live", {
+      headers: {
+        'x-rapidapi-host': 'cricbuzz-cricket.p.rapidapi.com',
+        'x-rapidapi-key': '3eaf2cd0f6msh9f0419b7c6972ffp1ae7b9jsn851ea81fff04'
+      }
+    });
+
+    // Return the data from CricBuzz API as the response
+    // return res.json({
+    //   message: "API is running successfully",
+    //   data: response.data
+    // });
+    return response.success(res.data.typeMatches, 'API is running successfully');
+  } catch (error) {
+
+    const errorResponse = error.message ? error.message : error;
+
+    // console.error(error);
+    return response.error({}, errorResponse);
+  }
+});
+
+
 app.use("/api", routes);
+
+
 
 app.all("*", (req, res) => {
   const response = new Response(res);
