@@ -41,39 +41,39 @@ cloudinaryConfig();
 // ========================================================
 // ====================== Try Connect =====================
 // ========================================================
-// mongoose
-//   .connect(process.env.MONGO_URI, {
-//     serverSelectionTimeoutMS: 5000,
-//     socketTimeoutMS: 45000,
-//   })
-//   .then(() =>
-//     console.log("---- Connected to MongoDB ----")
-//   )
-//   .catch((err) =>
-//     console.log("---- Error Connected MongoDB ----", err)
-//   );
+mongoose
+  .connect(process.env.MONGO_URI, {
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+  })
+  .then(() =>
+    console.log("---- Connected to MongoDB ----")
+  )
+  .catch((err) =>
+    console.log("---- Error Connected MongoDB ----", err)
+  );
 
 
 // ========================================================
 // ===================== If connected =====================
 // ========================================================
-// const db = mongoose.connection;
+const db = mongoose.connection;
 
 
 // ========================================================
 // =================== Mongoose Events ====================
 // ========================================================
-// db.on("connected", () => {
-//   console.log("---- Mongoose connected to DB ----");
-// });
+db.on("connected", () => {
+  console.log("---- Mongoose connected to DB ----");
+});
 
-// db.on("error", (err) => {
-//   console.log("---- Mongoose connection error ----", err);
-// });
+db.on("error", (err) => {
+  console.log("---- Mongoose connection error ----", err);
+});
 
-// db.on("disconnected", () => {
-//   console.log("---- Mongoose disconnected from DB ----");
-// });
+db.on("disconnected", () => {
+  console.log("---- Mongoose disconnected from DB ----");
+});
 
 
 // ========================================================
