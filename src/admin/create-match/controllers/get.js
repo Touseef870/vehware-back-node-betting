@@ -1,46 +1,66 @@
 import Response from '../../../../class/response.js';
-import getData from "../services/get.js"
+import MatchWithQuestionsModel from "../../add-questions/models/index.js";
 
 const getController = async (req, res) => {
     const response = new Response(res);
 
     try {
+        // Get current time in ISO format
+        const currentTime = new Date().toISOString();
 
-        const result = await getData();
+        // Find matches that haven't ended yet
+        const matches = await MatchWithQuestionsModel.find({
+            $or: [
+                { 'matchDetails.endDate': { $gt: currentTime } },
+                { 'matchDetails.endDate': { $exists: false } }
+            ]
+        })
+            .select({
+                'matchDetails.name': 1,
+                'matchDetails.startDate': 1,
+                'matchDetails.endDate': 1,
+                'matchDetails.matchType': 1,
+                'matchDetails.teams': 1,
+                'questions': 1,
+                createdAt: 1
+            })
+            .lean();
 
-        const matches = result.map((match) => {
-            return {
-                _id: match._id,
-                title: match.title,
-                startTime: match.startTime,
-                status: match.status,
-                minBet: match.minBet,
-                maxBet: match.maxBet,
-                createdAt: match.createdAt
-            }
-        });
+        // Format response
+        const formattedMatches = matches.map(match => ({
+            _id: match._id,
+            title: match.matchDetails.name,
+            teams: match.matchDetails.teams,
+            startTime: match.matchDetails.startDate,
+            matchType: match.matchDetails.matchType,
+            status: match.matchDetails.endDate
+                ? new Date(match.matchDetails.endDate) > new Date()
+                    ? 'Upcoming'
+                    : 'Live'
+                : 'Schedule TBD',
+            questionCount: match.questions.length,
+            createdAt: match.createdAt
+        }));
 
-        return response.success(matches, 'Data fetched successfully');
+        return response.success(formattedMatches, 'Active matches fetched successfully');
+
     } catch (error) {
-
-        if (error.name === "ValidationError") {
-            let validationErrors = {};
-            for (let field in error.errors) {
-                validationErrors[field] = error.errors[field].message;
-            }
-            return response.error(validationErrors, "Validation Error", 400);
+        // Handle mongoose errors
+        if (error.name === "CastError") {
+            return response.error(
+                { [error.path]: "Invalid data format" },
+                "Data format error",
+                400
+            );
         }
 
-        let messages = [];
-        if (error.errors) {
-            for (let field in error.errors) {
-                messages.push(error.errors[field].message);
-            }
-        } else {
-            messages.push(error.message);
-        }
-
-        response.error(messages, "Internal Server Error", 500);
+        // Handle other errors
+        console.error('Database Error:', error);
+        return response.error(
+            null,
+            "Failed to fetch matches",
+            500
+        );
     }
 }
 

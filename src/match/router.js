@@ -7,7 +7,9 @@ import getMatchCommentary from './commentary.js'
 import getMatchScoreCard from './getMatchScoreCard.js'
 import getMatchHighlightScorecard from './getMatchHighlightScorecard.js'
 import getMatchLeanbackDetails from './getMatchLeanbackDetails.js'
-
+import getLiveMatch from './getLiveMatch.js'
+import getLiveMatchDetails from './liveMatchDetails.js'
+ 
 const router = Router();
 
 router.get("/allmatches", handleMatchFetch)
@@ -18,5 +20,8 @@ router.get("/commentary", getMatchCommentary)
 router.get("/scores/:matchId", getMatchScoreCard)
 router.get("/v2/scores", getMatchHighlightScorecard)
 router.get("/lean-back-details", getMatchLeanbackDetails)
+
+router.get('/live-matches', getLiveMatch)
+router.get('/live-matches/:matchId', getLiveMatchDetails)
 
 export default router;

@@ -89,6 +89,7 @@ app.use("/api", routes);
 
 
 
+
 app.all("*", (req, res) => {
   const response = new Response(res);
   return response.error({}, 'Trying route undefined ⚠️');

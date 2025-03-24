@@ -44,29 +44,52 @@ export default async function getMatchDetails(req, res) {
     const options = {
         method: 'GET',
         hostname: 'cricbuzz-cricket.p.rapidapi.com',
-        port: null,
         path: `/mcenter/v1/${matchId || 41881}`,
         headers: {
-            'x-rapidapi-key': process.env.RAPIDAPI_KEY,
-            'x-rapidapi-host': 'cricbuzz-cricket.p.rapidapi.com',
+            'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
+            'X-RapidAPI-Host': 'cricbuzz-cricket.p.rapidapi.com',
         },
     };
 
     const request = https.request(options, (response) => {
+
         const chunks = [];
 
         response.on('data', (chunk) => chunks.push(chunk));
 
         response.on('end', () => {
             const body = Buffer.concat(chunks).toString();
-            res.status(200).json(JSON.parse(body));
+
+            // Check for successful status code first
+            if (response.statusCode !== 200) {
+                return res.status(response.statusCode).json({
+                    error: `API request failed with status ${response.statusCode}`,
+                    body: body
+                });
+            }
+
+            try {
+                if (!body) throw new Error('Empty response body');
+                res.json(JSON.parse(body));
+            } catch (error) {
+                console.error('JSON Parse Error:', error);
+                res.status(500).json({
+                    error: 'Invalid API response',
+                    details: error.message,
+                    responseBody: body
+                });
+            }
         });
     });
 
     request.on('error', (error) => {
-        console.error('Error fetching data:', error);
-        res.status(500).json({ error: 'Failed to fetch data' });
+        console.error('Request Error:', error);
+        res.status(500).json({
+            error: 'API request failed',
+            details: error.message
+        });
     });
 
     request.end();
-};
+}
+
